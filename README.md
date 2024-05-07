@@ -1,4 +1,4 @@
-### Project Name: **CleanApp**
+**CleanApp**
 
 ### Project Description
 CleanApp is a Flask-based web application designed to streamline the management of household tasks. It provides user management functionalities including sign-up, login, profile management, and task assignments. The application leverages a MySQL database to store user data, profiles, and tasks, enhancing interaction through dynamic web pages.
