@@ -1,5 +1,3 @@
-Based on the screenshot and the details you provided, here’s how we can structure the project information:
-
 ### Project Name: **CleanApp**
 
 ### Project Description
