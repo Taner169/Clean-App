@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<body class="body">
+    <div class="container-fluid mt-4">
+        <h1 class="title-pm">Profilhantering</h1>
+        <div class="row">
+            <div class="col">
+                <div class="user-widget-2">
+                    <ul class="list-unstyled">
+                        {% for profile in profiles %}
+                        <li class="media d-flex align-items-center justify-content-between">
+                            <!-- Profile Details -->
+                            <div class="d-flex align-items-center">
+                                <img class="rounded-circle mr-3"
+                                    src="https://bootdey.com/img/Content/avatar/avatar{{ loop.index }}.png" alt>
+                                <h5 class="mb-0 mr-3">{{ profile.profile_name }}</h5>
+                                <span class="badge badge-outline badge-sm badge-danger badge-pill">{{
+                                    profile.profile_type
+                                    }}</span>
+                            </div>
+
+                            <!-- Action Icons -->
+                            <div>
+                                <img class="edit-icon mr-2"
+                                    src="https://cdn3.iconfinder.com/data/icons/feather-5/24/edit-1024.png"
+                                    alt="edit icon" data-id="{{ profile.id }}" data-action="edit">
+                                <img class="delete-icon"
+                                    src="https://cdn3.iconfinder.com/data/icons/feather-5/24/trash-1024.png"
+                                    alt="delete icon" data-id="{{ profile.id }}" data-action="delete">
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="container-fluid justify-content-center">
+                <div class=lägg-till-profil>
+                    <!-- Plus Knappen för att öppna popup -->
+                    <button type="button" class="btn btn-primary" id="lägg-till-profil-knapp" data-bs-toggle="modal"
+                        data-bs-target="#addProfileModal">
+                        +
+                    </button>
+                    <h5 data-bs-toggle="modal" data-bs-target="#addProfileModal">Lägg till profil</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- popup -->
+        <div class="modal fade" id="addProfileModal" tabindex="-1" aria-labelledby="addProfileModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addProfileModalLabel">Lägg till profil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addProfileForm" method="post" action="{{ url_for('add_profile') }}">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Profilnamn</label>
+                                <input type="text" class="form-control" id="name" name="profile_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="profileRole" class="form-label">Roll</label>
+                                <select class="form-control" id="profileRole" name="profile_type" required>
+                                    <option value="Adult Mode">Vuxen</option>
+                                    <option value="Child Mode">Barn</option>
+                                </select>
+                            </div>
+                            <button type="submit" id="submitButton" class="btn btn-primary">Lägg till profil</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Script för submit-funktionen för profilerna -->
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                var submitButton = document.getElementById('submitButton');
+                submitButton.addEventListener('click', function (event) {
+                    event.preventDefault(); // prevent the default form submission
+
+
+                    var form = document.getElementById('addProfileForm');
+                    form.submit(); // Manually submit the form
+                });
+            });
+            // Script för edit och delete ikonerna
+            document.addEventListener('DOMContentLoaded', function () {
+
+                var editIcons = document.querySelectorAll('.edit-icon');
+                var deleteIcons = document.querySelectorAll('.delete-icon');
+
+                editIcons.forEach(function (icon) {
+                    icon.addEventListener('click', function () {
+                        var profileId = this.getAttribute('data-id');
+                        var newName = prompt("Enter new name for the profile:");
+                        if (newName) {
+                            var form = document.createElement('form');
+                            form.method = "POST";
+                            form.action = "/edit_profile/" + profileId;
+                            var input = document.createElement('input');
+                            input.type = "hidden";
+                            input.name = "new_name";
+                            input.value = newName;
+                            form.appendChild(input);
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+                });
+
+                deleteIcons.forEach(function (icon) {
+                    icon.addEventListener('click', function () {
+                        var profileId = this.getAttribute('data-id');
+                        var confirmation = confirm("Are you sure you want to delete this profile?");
+                        if (confirmation) {
+                            var form = document.createElement('form');
+                            form.method = "POST";
+                            form.action = "/delete_profile/" + profileId;
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        </script>
+    </div>
+</body>
+{% endblock %}
